@@ -1,12 +1,3 @@
-DROP TABLE IF EXISTS hero_threats;
-DROP TABLE IF EXISTS item_hero_modifiers;
-DROP TABLE IF EXISTS item_hero_synergies;
-DROP TABLE IF EXISTS item_threat_relationships;
-DROP TABLE IF EXISTS item_components;
-DROP TABLE IF EXISTS heroes;
-DROP TABLE IF EXISTS items;
-DROP TABLE IF EXISTS threats;
-
 --Core Tables
 CREATE TABLE heroes (
 	id SERIAL PRIMARY KEY,
