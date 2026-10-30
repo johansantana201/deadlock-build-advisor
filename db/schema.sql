@@ -16,7 +16,7 @@ CREATE TABLE threats (
 	description TEXT
 );
 
--- Which threats an enemy hero brings
+-- The main threats an enemy hero generally brings
 CREATE TABLE hero_threats (
 	id SERIAL PRIMARY KEY,
 	hero_id INTEGER NOT NULL,
