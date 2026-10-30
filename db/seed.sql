@@ -11,7 +11,10 @@ VALUES ('Healbane', 1600), ('Toxic Bullets', 3200),
 	   ('Spirit Shielding', 1600), ('Weapon Shielding', 1600),
 	   ('Knockdown', 3200), ('Phantom Strike', 6400),
 	   ('Dispel Magic', 3200), ('Debuff Reducer', 1600),
-	   ('Plated Armor', 6400), ('Indomitable', 6400);
+	   ('Plated Armor', 6400), ('Indomitable', 6400),
+	   ('Tankbuster', 3200), ('Decay', 3200),
+	   ('Armor Piercer', 6400), ('Weakening Headshot', 1600),
+	   ('Crippling Headshot', 6400);
 
 INSERT INTO threats(name, description)
 VALUES ('High Sustain', 'Enemy has high self healing, shielding, or is receiving external healing'),
