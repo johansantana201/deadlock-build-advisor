@@ -74,3 +74,64 @@ FROM (VALUES ('Abrams', 'High Sustain'),
 			 AS v(hero_name, threat_name)
 JOIN heroes h ON h.name = v.hero_name
 JOIN threats t ON t.name = v.threat_name;
+	   
+INSERT INTO item_threat_relationships (item_id, threat_id, effectiveness, reason)
+SELECT i.id AS item_id, t.id AS threat_id
+FROM (VALUES
+			 --Anti Heal
+			 ('Healbane',      'High Sustain', 3, 'Directly reduces enemy healing'),
+             ('Toxic Bullets', 'High Sustain', 3, 'Anti-heal applied by your bullets'),
+             ('Toxic Bullets', 'High Health', 2, 'Deals spirit percentage damage with bullet build up'),
+
+			 --Weapon resistance: steady resists and active negation
+             ('Bullet Vest', 'Weapon Damage', 2, 'Decent early-mid game passive bullet resists'),
+             ('Bullet Vest', 'Weapon Burst', 1,  'Helps a negligible amount against burst, resists are more so for longer exchanges'),
+             ('Metal Skin', 'Weapon Damage', 3,  'Provides passive resists and negates all weapon damage from guns and abilities upon activation'),
+             ('Metal Skin', 'Weapon Burst', 3,   'Activation can be timed to completely negate a weapon burst combo'),
+
+             -- Spirit resistance: steady resists and burst shields
+             ('Enchanter''s Emblem', 'Spirit Damage', 2, 'Decent early-mid game passive spirit resists'),
+             ('Enchanter''s Emblem', 'Spirit Burst', 1, 'Helps a little against burst, resists are more so for longer exchanges'),
+             ('Spirit Resilience', 'Spirit Damage', 3, 'High passive spirit resists for sustained spirit pressure'),
+             ('Spirit Resilience', 'Spirit Burst', 2, 'High resists noticeably reduce the size of a spirit combo'),
+             ('Spirit Shielding', 'Spirit Burst', 3, 'Shield absorbs the bulk of a sudden spirit combo'),
+             ('Spirit Shielding', 'Spirit Damage', 1, 'Shield helps once, but does little over a long exchange'),
+
+             -- Weapon resistance: burst shield and late game armor
+             ('Weapon Shielding', 'Weapon Burst', 3, 'Shield absorbs the bulk of a sudden weapon burst'),
+             ('Weapon Shielding', 'Weapon Damage', 1, 'Shield helps once, but does little over a long exchange'),
+             ('Plated Armor', 'Weapon Damage', 3, 'Large late game bullet resists against sustained gun damage'),
+             ('Plated Armor', 'Weapon Burst', 2, 'High resists reduce the size of a weapon burst'),
+
+             -- Anti-mobility and anti-flight
+             ('Slowing Hex', 'High Mobility', 3, 'Slows and shuts down movement abilities to stop escapes and engages'),
+             ('Slowing Hex', 'Flight', 2, 'Slowing a flying enemy makes them much easier to hit'),
+             ('Slowing Bullets', 'High Mobility', 2, 'Constant slow on hit makes slippery enemies easier to stick to, but it doesn''t hinder'),
+             ('Slowing Bullets', 'Flight', 1, 'Slow helps track flying enemies but does not bring them down'),
+             ('Knockdown', 'Flight', 3, 'Pulls flying or hovering enemies back to the ground and the stun time scales with enemy height'),
+             ('Knockdown', 'High Mobility', 1, 'Delayed stun can interrupt a mobile enemy if timed well'),
+             ('Phantom Strike', 'Flight', 3, 'Teleports to the target and brings them down from the air'),
+             ('Phantom Strike', 'High Mobility', 2, 'Gap closer that lets you catch enemies who try to escape'),
+             ('Enduring Speed', 'High Mobility', 2, 'Extra move speed to keep up with or escape mobile enemies'),
+             ('Enduring Speed', 'Soft Crowd Control', 2, 'Reduces the impact of slows'),
+
+             -- Crowd control and debuffs
+             ('Reactive Barrier', 'Hard Crowd Control', 2, 'Grants a barrier when immobilized so you survive the follow-up'),
+             ('Indomitable', 'Hard Crowd Control', 3, 'Activation makes you immune to sudden stuns and displacements'),
+             ('Indomitable', 'Soft Crowd Control', 2, 'Immunity also blocks most slows and silences while active'),
+             ('Debuff Reducer', 'Soft Crowd Control', 3, 'Shortens slows, silences and other debuffs'),
+             ('Debuff Reducer', 'Status Markers', 2, 'Damage-over-time and stacking effects wear off faster'),
+             ('Debuff Reducer', 'Hard Crowd Control', 1, 'Shortens stun duration slightly'),
+             ('Dispel Magic', 'Status Markers', 3, 'Removes damage-over-time effects and debuff stacks entirely'),
+             ('Dispel Magic', 'Soft Crowd Control', 3, 'Cleanses slows, silences and other active debuffs')
+
+			 -- Anti-tank: percent damage and resist reduction
+             ('Tankbuster', 'High Health', 3, 'Bonus damage based on the enemy''s max health, scales up against bulky targets'),
+             ('Decay', 'High Health', 3, 'Deals damage as a percentage of max health over time'),
+             ('Decay', 'High Sustain', 2, 'Reduces the target''s healing while the decay is active'),
+             ('Armor Piercer', 'High Health', 3, 'Cuts through bullet resists that make tanky enemies hard to kill'),
+             ('Weakening Headshot', 'High Health', 2, 'Headshots reduce the target''s bullet resist for your team'),
+             ('Crippling Headshot', 'High Health', 3, 'Headshots heavily reduce both bullet and spirit resists')
+     AS v(item_name, threat_name, effectiveness, reason)
+JOIN items i ON i.name = v.item_name
+JOIN threats t ON t.name = v.threat_name;
