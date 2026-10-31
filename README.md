@@ -11,14 +11,14 @@ The goal is to provide recommendations along with understandable explanations fo
 Even experienced deadlock players have difficulty determining what item to purchase next because an item's usefulness depends heavily on the current match context.
 A player may need to consider:
 
-Their own hero
-Enemy heroes
-Their current items
-Available gold
-Problems they are experiencing in the match
-Whether they are winning or losing
-The functions already provided by teammates
-Other situational factors
+- Their own hero
+- Enemy heroes
+- Their current items
+- Available gold
+- Problems they are experiencing in the match
+- Whether they are winning or losing
+- The functions already provided by teammates
+- Other situational factors
 
 Although players can find information about individual heroes and items, they still have to manually combine this information to decide what purchase makes sense.
 
@@ -34,36 +34,36 @@ The system will not attempt to determine one objectively correct purchase. Inste
 
 The minimum viable product will allow a player to:
 
-Select their hero.
-Select enemy heroes.
-Enter their current items.
-Enter their available gold.
-Select their primary problem or threat in the match.
-Optionally indicate whether they are currently winning or losing.
+- Select their hero.
+- Select enemy heroes.
+- Enter their current items.
+- Enter their available gold.
+- Select their primary problem or threat in the match.
+- Optionally indicate whether they are currently winning or losing.
 
 The system will then:
 
-Evaluate potential item purchases.
-Assign relevance points based on the current match context.
-Present several relevant item recommendations.
-Explain why each item received its points.
-Show whether the item is currently affordable.
-Provide alternative recommendations when appropriate.
+- Evaluate potential item purchases.
+- Assign relevance points based on the current match context.
+- Present several relevant item recommendations.
+- Explain why each item received its points.
+- Show whether the item is currently affordable.
+- Provide alternative recommendations when appropriate.
 
 ### Example
 
 A player selects:
 
-Hero: Abrams
-Enemies: Grey Talon and Vindicta
-Problem: Difficulty reaching ranged enemies
+- Hero: Abrams
+- Enemies: Grey Talon and Vindicta
+- Problem: Difficulty reaching ranged enemies
 
 The system could evaluate Phantom Strike as:
 
-+1 because Grey Talon is on the enemy team
-+1 because Vindicta is on the enemy team
-+1 because the item synergizes with Abrams
-Additional points may come from other relevant factors
+- +1 because Grey Talon is on the enemy team
+- +1 because Vindicta is on the enemy team
+- +1 because the item synergizes with Abrams
+- Additional points may come from other relevant factors
 
 The system would then explain why Phantom Strike is relevant rather than simply displaying it as part of a predetermined build.
 
@@ -134,14 +134,14 @@ The initial version will use a limited set of heroes, items, and relationships t
 
 The project will initially focus on:
 
-A small selection of heroes
-A small selection of items
-Common gameplay threats
-Hero-item relationships
-Threat-item relationships
-Basic contextual scoring
-REST API functionality
-PostgreSQL data storage
+- A small selection of heroes
+- A small selection of items
+- Common gameplay threats
+- Hero-item relationships
+- Threat-item relationships
+- Basic contextual scoring
+- REST API functionality
+- PostgreSQL data storage
 
 The system will be designed so that additional heroes, items, and relationships can be added later without requiring a major redesign.
 
@@ -149,26 +149,26 @@ The system will be designed so that additional heroes, items, and relationships 
 
 The following features will not be required for the initial version:
 
-Automatic live-game tracking
-Automatic detection of the player's inventory
-Automatic ultimate cooldown tracking
-Automatic objective timing
-Machine learning
-AI-generated recommendations
-Complete coverage of every possible matchup
-A complete community build platform
-Recreating Deadlock's existing build-planning functionality
+- Automatic live-game tracking
+- Automatic detection of the player's inventory
+- Automatic ultimate cooldown tracking
+- Automatic objective timing
+- Machine learning
+- AI-generated recommendations
+- Complete coverage of every possible matchup
+- A complete community build platform
+- Recreating Deadlock's existing build-planning functionality
 
 These features may be considered for future versions if the core recommendation system is completed.
 
 ## Technology Stack
-Java
-Spring Boot
-Maven
-Spring Web
-Spring Data JPA
-PostgreSQL
-REST API
+- Java
+- Spring Boot
+- Maven
+- Spring Web
+- Spring Data JPA
+- PostgreSQL
+- REST API
 
 A frontend framework may be added after the core backend and recommendation system are functional.
 
@@ -176,11 +176,11 @@ A frontend framework may be added after the core backend and recommendation syst
 
 The initial database will contain tables representing:
 
-Heroes
-Items
-Threats
-Item-Hero relationships
-Item-Threat relationships
+- Heroes
+- Items
+- Threats
+- Item-Hero relationships
+- Item-Threat relationships
 
 These relationships will provide the data used by the recommendation engine.
 
@@ -188,75 +188,75 @@ These relationships will provide the data used by the recommendation engine.
 
 Initial endpoints will provide access to:
 
-GET /api/heroes
-GET /api/items
-GET /api/threats
-GET /api/item-hero-relationships
-GET /api/item-threat-relationships
+- GET /api/heroes
+- GET /api/items
+- GET /api/threats
+- GET /api/item-hero-relationships
+- GET /api/item-threat-relationships
 
 Recommendation endpoints will be added after the scoring system is implemented.
 
 ## Development Roadmap
 ### Phase 1 — Design, Database, and Project Setup
-Define the exact MVP
-Design the database schema
-Create the Spring Boot Maven project
-Connect Spring Boot to PostgreSQL
-Create initial entities and tables
-Add a small amount of hero, item, and threat data
-Add initial item relationships
-Create basic REST API endpoints
+- Define the exact MVP
+- Design the database schema
+- Create the Spring Boot Maven project
+- Connect Spring Boot to PostgreSQL
+- Create initial entities and tables
+- Add a small amount of hero, item, and threat data
+- Add initial item relationships
+- Create basic REST API endpoints
 
 Week 1 Deliverable:
 
 The API can retrieve heroes, items, threats, and their relationships from PostgreSQL.
 
 ### Phase 2 — Recommendation Engine
-Implement the relevance point system
-Calculate item scores based on match context
-Add hero-specific scoring
-Add enemy-specific scoring
-Add threat-based scoring
-Generate explanations for recommendations
-Return recommended items through the API
+- Implement the relevance point system
+- Calculate item scores based on match context
+- Add hero-specific scoring
+- Add enemy-specific scoring
+- Add threat-based scoring
+- Generate explanations for recommendations
+- Return recommended items through the API
 
 ### Phase 3 — User Interface
-Create hero selection
-Create enemy selection
-Create current inventory input
-Create available gold input
-Create threat/problem selection
-Display recommendations and explanations
+- Create hero selection
+- Create enemy selection
+- Create current inventory input
+- Create available gold input
+- Create threat/problem selection
+- Display recommendations and explanations
 
 ### Phase 4 — Improve Recommendation Logic
-Add winning/losing context
-Improve item alternatives
-Add additional relationships
-Handle edge cases
-Improve recommendation explanations
-Test different match scenarios
+- Add winning/losing context
+- Improve item alternatives
+- Add additional relationships
+- Handle edge cases
+- Improve recommendation explanations
+- Test different match scenarios
 
 ### Phase 5 — Testing and Polish
-Test API endpoints
-Test recommendation logic
-Test database relationships
-Improve frontend presentation
-Fix bugs
-Clean up code
-Complete documentation
-Prepare project demonstration
+- Test API endpoints
+- Test recommendation logic
+- Test database relationships
+- Improve frontend presentation
+- Fix bugs
+- Clean up code
+- Complete documentation
+- Prepare project demonstration
 
 ## Future Ideas
 
 ### Possible future features include:
 
-Full hero and item database
-Team composition analysis
-Teammate item analysis
-Objective-based recommendations
-Ultimate availability
-Live match integration
-Personal recommendation history
-Match history analysis
-More advanced recommendation rules
-User accounts and saved builds
+- Full hero and item database
+- Team composition analysis
+- Teammate item analysis
+- Objective-based recommendations
+- Ultimate availability
+- Live match integration
+- Personal recommendation history
+- Match history analysis
+- More advanced recommendation rules
+- User accounts and saved builds
