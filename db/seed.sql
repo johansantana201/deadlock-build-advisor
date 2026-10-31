@@ -39,7 +39,6 @@ FROM (VALUES ('Abrams', 'High Sustain'),
 			 ('Lash', 'Spirit Burst'),
 			 ('Lash', 'Hard Crowd Control'),
 			 ('Lash', 'High Mobility'),
-			 ('Lash', 'High Health'),
 			 ('Venator', 'Weapon Damage'),
 			 ('Venator', 'Weapon Burst'),
 			 ('Venator', 'Status Markers'),
@@ -52,6 +51,7 @@ FROM (VALUES ('Abrams', 'High Sustain'),
 			 ('Shiv', 'High Mobility'),
 			 ('Shiv', 'Status Markers'),
 			 ('Shiv', 'High Sustain'),
+			 ('Shiv', 'High Health'),
 			 ('Calico', 'Spirit Burst'),
 			 ('Calico', 'Status Markers'),
 			 ('Haze', 'Weapon Damage'),
@@ -64,11 +64,13 @@ FROM (VALUES ('Abrams', 'High Sustain'),
 			 ('Bebop', 'Weapon Damage'),
 			 ('Bebop', 'Status Markers'),
 			 ('Bebop', 'Spirit Damage'),
+			 ('Bebop', 'High Health'),
 			 ('Celeste', 'Spirit Damage'),
 			 ('Celeste', 'High Mobility'),
 			 ('Mina', 'Spirit Burst'),
 			 ('Mina', 'High Mobility'),
 			 ('Mina', 'Status Markers'),
+			 ('Mina', 'High Sustain'),
 			 ('Vindicta', 'Flight'),
 			 ('Vindicta', 'Weapon Damage'))
 			 AS v(hero_name, threat_name)
@@ -76,7 +78,7 @@ JOIN heroes h ON h.name = v.hero_name
 JOIN threats t ON t.name = v.threat_name;
 	   
 INSERT INTO item_threat_relationships (item_id, threat_id, effectiveness, reason)
-SELECT i.id AS item_id, t.id AS threat_id
+SELECT i.id AS item_id, t.id AS threat_id, v.effectiveness, v.reason
 FROM (VALUES
 			 --Anti Heal
 			 ('Healbane',      'High Sustain', 3, 'Directly reduces enemy healing'),
@@ -106,7 +108,7 @@ FROM (VALUES
              -- Anti-mobility and anti-flight
              ('Slowing Hex', 'High Mobility', 3, 'Slows and shuts down movement abilities to stop escapes and engages'),
              ('Slowing Hex', 'Flight', 2, 'Slowing a flying enemy makes them much easier to hit'),
-             ('Slowing Bullets', 'High Mobility', 2, 'Constant slow on hit makes slippery enemies easier to stick to, but it doesn''t hinder'),
+             ('Slowing Bullets', 'High Mobility', 2, 'Constant slow on hit, but does not prevent the usage of movement abilities'),
              ('Slowing Bullets', 'Flight', 1, 'Slow helps track flying enemies but does not bring them down'),
              ('Knockdown', 'Flight', 3, 'Pulls flying or hovering enemies back to the ground and the stun time scales with enemy height'),
              ('Knockdown', 'High Mobility', 1, 'Delayed stun can interrupt a mobile enemy if timed well'),
@@ -123,7 +125,7 @@ FROM (VALUES
              ('Debuff Reducer', 'Status Markers', 2, 'Damage-over-time and stacking effects wear off faster'),
              ('Debuff Reducer', 'Hard Crowd Control', 1, 'Shortens stun duration slightly'),
              ('Dispel Magic', 'Status Markers', 3, 'Removes damage-over-time effects and debuff stacks entirely'),
-             ('Dispel Magic', 'Soft Crowd Control', 3, 'Cleanses slows, silences and other active debuffs')
+             ('Dispel Magic', 'Soft Crowd Control', 3, 'Cleanses slows, silences and other active debuffs'),
 
 			 -- Anti-tank: percent damage and resist reduction
              ('Tankbuster', 'High Health', 3, 'Bonus damage based on the enemy''s max health, scales up against bulky targets'),
@@ -131,7 +133,8 @@ FROM (VALUES
              ('Decay', 'High Sustain', 2, 'Reduces the target''s healing while the decay is active'),
              ('Armor Piercer', 'High Health', 3, 'Cuts through bullet resists that make tanky enemies hard to kill'),
              ('Weakening Headshot', 'High Health', 2, 'Headshots reduce the target''s bullet resist for your team'),
-             ('Crippling Headshot', 'High Health', 3, 'Headshots heavily reduce both bullet and spirit resists')
+             ('Crippling Headshot', 'High Health', 3, 'Headshots heavily reduce both bullet and spirit resists'),
+			 ('Crippling Headshot', 'High Sustain', 3, 'Reduces incoming healing upon landing a headshot'))
      AS v(item_name, threat_name, effectiveness, reason)
 JOIN items i ON i.name = v.item_name
 JOIN threats t ON t.name = v.threat_name;
