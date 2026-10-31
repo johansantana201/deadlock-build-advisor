@@ -1,13 +1,13 @@
-#Deadlock Build Advisor
+# Deadlock Build Advisor
 
-##Overview
+## Overview
 Deadlock Build Advisor is a context-aware recommendation tool designed to help players decide which item to buy next during a match.
 
 Instead of providing a fixed build order, the system evaluates potential items based on the current match situation. Factors such as the player's hero, the enemy heroes, everyones current items, available gold, and the player's main problem in the match can affect an item's relevance.
 
 The goal is to provide recommendations along with understandable explanations for why an item may be useful in the current situation.
 
-##Problem
+## Problem
 Even experienced deadlock players have difficulty determining what item to purchase next because an item's usefulness depends heavily on the current match context.
 A player may need to consider:
 
@@ -24,13 +24,13 @@ Although players can find information about individual heroes and items, they st
 
 The core problem is that the player has access to the relevant information, but must manually determine how those pieces of information interact.
 
-##Goal
+## Goal
 
 The goal of this project is to create a decision-support tool that evaluates potential item purchases based on the current match context and explains why each recommendation is relevant.
 
 The system will not attempt to determine one objectively correct purchase. Instead, it will provide situational recommendations and explain the factors contributing to each item's relevance.
 
-##MVP
+## MVP
 
 The minimum viable product will allow a player to:
 
@@ -49,7 +49,8 @@ Present several relevant item recommendations.
 Explain why each item received its points.
 Show whether the item is currently affordable.
 Provide alternative recommendations when appropriate.
-Example
+
+### Example
 
 A player selects:
 
@@ -127,7 +128,7 @@ Later versions may also consider affordability, current inventory, winning or lo
 
 The score represents how relevant an item is in the given matchup, not one objectively correct purchase.
 
-##Initial Scope
+## Initial Scope
 
 The initial version will use a limited set of heroes, items, and relationships to demonstrate the recommendation system.
 
@@ -144,7 +145,7 @@ PostgreSQL data storage
 
 The system will be designed so that additional heroes, items, and relationships can be added later without requiring a major redesign.
 
-##Out of Scope for the MVP
+## Out of Scope for the MVP
 
 The following features will not be required for the initial version:
 
@@ -160,7 +161,7 @@ Recreating Deadlock's existing build-planning functionality
 
 These features may be considered for future versions if the core recommendation system is completed.
 
-Technology Stack
+## Technology Stack
 Java
 Spring Boot
 Maven
@@ -171,7 +172,7 @@ REST API
 
 A frontend framework may be added after the core backend and recommendation system are functional.
 
-##Planned Database
+## Planned Database
 
 The initial database will contain tables representing:
 
@@ -183,7 +184,7 @@ Item-Threat relationships
 
 These relationships will provide the data used by the recommendation engine.
 
-##Planned API
+## Planned API
 
 Initial endpoints will provide access to:
 
@@ -195,8 +196,8 @@ GET /api/item-threat-relationships
 
 Recommendation endpoints will be added after the scoring system is implemented.
 
-##Development Roadmap
-###Phase 1 — Design, Database, and Project Setup
+## Development Roadmap
+### Phase 1 — Design, Database, and Project Setup
 Define the exact MVP
 Design the database schema
 Create the Spring Boot Maven project
@@ -210,7 +211,7 @@ Week 1 Deliverable:
 
 The API can retrieve heroes, items, threats, and their relationships from PostgreSQL.
 
-###Phase 2 — Recommendation Engine
+### Phase 2 — Recommendation Engine
 Implement the relevance point system
 Calculate item scores based on match context
 Add hero-specific scoring
@@ -219,7 +220,7 @@ Add threat-based scoring
 Generate explanations for recommendations
 Return recommended items through the API
 
-###Phase 3 — User Interface
+### Phase 3 — User Interface
 Create hero selection
 Create enemy selection
 Create current inventory input
@@ -227,7 +228,7 @@ Create available gold input
 Create threat/problem selection
 Display recommendations and explanations
 
-###Phase 4 — Improve Recommendation Logic
+### Phase 4 — Improve Recommendation Logic
 Add winning/losing context
 Improve item alternatives
 Add additional relationships
@@ -235,7 +236,7 @@ Handle edge cases
 Improve recommendation explanations
 Test different match scenarios
 
-###Phase 5 — Testing and Polish
+### Phase 5 — Testing and Polish
 Test API endpoints
 Test recommendation logic
 Test database relationships
@@ -244,9 +245,10 @@ Fix bugs
 Clean up code
 Complete documentation
 Prepare project demonstration
-Future Ideas
 
-###Possible future features include:
+## Future Ideas
+
+### Possible future features include:
 
 Full hero and item database
 Team composition analysis
