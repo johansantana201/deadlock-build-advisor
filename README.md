@@ -66,53 +66,66 @@ Additional points may come from other relevant factors
 
 The system would then explain why Phantom Strike is relevant rather than simply displaying it as part of a predetermined build.
 
-##Relevance Point System
+## Scoring Model
 
-The recommendation engine will use a rule-based scoring system.
+The recommendation engine is a rule-based scoring system. Items are not scored against heroes directly. Instead, each enemy hero is described by the **threats** they bring, and each item is scored by how well it **answers** those threats.
 
-An item's relevance score can be affected by several factors.
+### Threats
 
-Enemy Hero Relevance
+A threat is a problem an enemy can create, such as High Sustain, Flight, Weapon Burst or Hard Crowd Control. Each enemy hero is linked to the main threats they bring **with their most common build** (`hero_threats`). For example, Holliday is listed for Spirit Damage, not Weapon Damage, because she is usually built for spirit.
 
-An item may receive points when it addresses a specific enemy hero.
+### Effectiveness
 
-For example:
+Each item is linked to the threats it counters, with an effectiveness score and a reason (`item_threat_relationships`):
 
-Phantom Strike
-    → Grey Talon: +1
-    → Vindicta: +1
-###Hero Synergy
+| Score | Meaning |
+|---|---|
+| 1 | Helps a little |
+| 2 | Solid answer |
+| 3 | Core counter |
 
-An item may receive points when it is particularly useful for the player's selected hero.
+Only items that actually address a threat get a row. No row means the item does not help against that threat.
 
-Abrams
-    → Phantom Strike: +1
-###Threat Relevance
+The scores follow a few consistent rules:
 
-An item may receive points when it directly addresses the player's current problem.
+- **Passive resists** (Bullet Vest, Metal Skin, Plated Armor, Spirit Resilience) score high against **steady** damage and low against **burst**.
+- **Shields** (Weapon Shielding, Spirit Shielding) score high against **burst** and low against **steady** damage.
+- **Upgraded items score higher** than the items they are built from.
 
-Examples include:
+### Calculating a score
 
-Getting kited
-Enemy healing
-Getting burst down
-Enemy crowd control
-Difficulty reaching enemies
-Difficulty surviving team fights
-Other Factors
+For a given enemy team:
 
-###Future versions may consider:
+1. Find every threat each enemy hero brings.
+2. Find every item that counters each of those threats.
+3. Add up the effectiveness for each item. If two enemies bring the same threat, the item counts for both, so items that answer several enemies rank higher.
+4. Sort by score, highest first. Ties go to the cheaper item.
 
-Affordability
-Current inventory
-Winning or losing
-Teammate item functions
-Upcoming objectives
-Item redundancy
+The query lives in [`db/queries/recommend_items.sql`](db/queries/recommend_items.sql).
 
-The exact scoring rules will be developed as the project progresses.
+### Example
 
-The points are intended to represent item relevance within the provided context, not an objectively correct purchase.
+Enemy team: **Grey Talon** (Flight, Spirit Burst, Soft Crowd Control) and **Vindicta** (Flight, Weapon Damage).
+
+| Item | Score | Why |
+|---|---|---|
+| Knockdown | 6 | Flight 3 (Grey Talon) + Flight 3 (Vindicta) |
+| Phantom Strike | 6 | Flight 3 (Grey Talon) + Flight 3 (Vindicta) |
+| Slowing Hex | 4 | Flight 2 (Grey Talon) + Flight 2 (Vindicta) |
+
+Both enemies fly, so anti-flight items take the top spots. Knockdown ranks above Phantom Strike because they tie on score and Knockdown is cheaper (3200 vs 6400).
+
+### Not used in scoring yet
+
+The schema already includes tables for these, but they are empty and the score does not use them yet:
+
+- **Matchup modifiers** (`item_hero_modifiers`): exceptions for a specific enemy hero, from -3 to +3. For example, Rebuttal against a hero who melees constantly.
+- **Hero synergy** (`item_hero_synergies`): how well an item fits the player's own hero, from 1 to 3.
+- **Upgrade chains** (`item_components`): which items an upgrade is built from.
+
+Later versions may also consider affordability, current inventory, winning or losing, and heroes with more than one common build.
+
+The score represents how relevant an item is in the given matchup, not one objectively correct purchase.
 
 ##Initial Scope
 
