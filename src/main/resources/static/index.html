@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Deadlock Build Advisor</title>
+	<style>
+		body {
+			font-family: system-ui, sans-serif;
+			background: #16141a;
+			color: #ece8e1;
+			max-width: 860px;
+			margin: 0 auto;
+			padding: 24px 16px;
+		}
+		h1 { margin-bottom: 4px; }
+		.subtitle { color: #a8a29a; margin-top: 0; }
+		.heroes {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+			gap: 8px;
+			margin: 16px 0;
+		}
+		.heroes label {
+			background: #24212a;
+			border: 1px solid #36323e;
+			border-radius: 6px;
+			padding: 8px 10px;
+			cursor: pointer;
+		}
+		.heroes label:has(input:checked) {
+			border-color: #d9a441;
+			background: #2f2a22;
+		}
+		button {
+			background: #d9a441;
+			color: #16141a;
+			border: none;
+			border-radius: 6px;
+			padding: 10px 18px;
+			font-size: 1rem;
+			font-weight: 600;
+			cursor: pointer;
+		}
+		#message { color: #a8a29a; }
+		table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+		th, td { text-align: left; padding: 8px; border-bottom: 1px solid #36323e; }
+		th { color: #a8a29a; font-weight: 500; }
+		td.score { font-weight: 700; color: #d9a441; }
+	</style>
+</head>
+<body>
+	<h1>Deadlock Build Advisor</h1>
+	<p class="subtitle">Pick the enemy heroes to see which items counter them best.</p>
+
+	<div id="heroes" class="heroes"></div>
+	<button id="recommend">Recommend items</button>
+	<p id="message"></p>
+
+	<table id="results" hidden>
+		<thead>
+			<tr><th>Item</th><th>Cost</th><th>Score</th><th>Counters</th></tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+
+	<script>
+		const heroesDiv = document.getElementById('heroes');
+		const message = document.getElementById('message');
+		const table = document.getElementById('results');
+		const tbody = table.querySelector('tbody');
+
+		// Build one checkbox per hero from GET /api/heroes
+		async function loadHeroes() {
+			const response = await fetch('/api/heroes');
+			const heroes = await response.json();
+			for (const hero of heroes) {
+				const label = document.createElement('label');
+				const checkbox = document.createElement('input');
+				checkbox.type = 'checkbox';
+				checkbox.value = hero;
+				label.append(checkbox, ' ' + hero);
+				heroesDiv.append(label);
+			}
+		}
+
+		// Send the checked heroes to GET /api/recommendations and show the results
+		async function recommend() {
+			const checked = heroesDiv.querySelectorAll('input:checked');
+			const enemies = Array.from(checked, box => box.value);
+			if (enemies.length === 0) {
+				message.textContent = 'Pick at least one enemy hero.';
+				table.hidden = true;
+				return;
+			}
+
+			const params = new URLSearchParams({ enemies: enemies.join(',') });
+			const response = await fetch('/api/recommendations?' + params);
+			const items = await response.json();
+
+			tbody.innerHTML = '';
+			for (const item of items) {
+				const row = tbody.insertRow();
+				row.insertCell().textContent = item.item;
+				row.insertCell().textContent = item.cost;
+				const score = row.insertCell();
+				score.textContent = item.score;
+				score.className = 'score';
+				row.insertCell().textContent = item.countered;
+			}
+			message.textContent = items.length + ' items ranked against ' + enemies.join(', ');
+			table.hidden = items.length === 0;
+		}
+
+		document.getElementById('recommend').addEventListener('click', recommend);
+		loadHeroes();
+	</script>
+</body>
+</html>
