@@ -9,29 +9,71 @@
 			font-family: system-ui, sans-serif;
 			background: #16141a;
 			color: #ece8e1;
-			max-width: 860px;
+			max-width: 900px;
 			margin: 0 auto;
 			padding: 24px 16px;
 		}
 		h1 { margin-bottom: 4px; }
 		.subtitle { color: #a8a29a; margin-top: 0; }
+
+		/* Hero picker */
 		.heroes {
 			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-			gap: 8px;
+			grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+			gap: 10px;
 			margin: 16px 0;
 		}
-		.heroes label {
+		.hero-card {
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 6px;
 			background: #24212a;
-			border: 1px solid #36323e;
+			border: 2px solid #36323e;
+			border-radius: 8px;
+			padding: 10px 6px;
+			cursor: pointer;
+			text-align: center;
+		}
+		.hero-card input { position: absolute; opacity: 0; pointer-events: none; }
+		.hero-card:has(input:checked) { border-color: #d9a441; background: #2f2a22; }
+		.hero-card:has(input:disabled) { opacity: 0.4; cursor: not-allowed; }
+		.portrait {
+			width: 64px;
+			height: 64px;
+			border-radius: 50%;
+			object-fit: cover;
+			background: #36323e;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: 700;
+			font-size: 1.3rem;
+			color: #a8a29a;
+		}
+		.portrait.small { width: 28px; height: 28px; font-size: 0.75rem; }
+
+		/* Description shown when hovering a hero card */
+		.hero-card[data-description]:hover::after {
+			content: attr(data-description);
+			position: absolute;
+			bottom: calc(100% + 8px);
+			left: 50%;
+			transform: translateX(-50%);
+			width: 220px;
+			background: #0d0c10;
+			border: 1px solid #d9a441;
 			border-radius: 6px;
 			padding: 8px 10px;
-			cursor: pointer;
+			font-size: 0.85rem;
+			line-height: 1.35;
+			z-index: 10;
+			pointer-events: none;
 		}
-		.heroes label:has(input:checked) {
-			border-color: #d9a441;
-			background: #2f2a22;
-		}
+
+		.controls { display: flex; align-items: center; gap: 16px; }
+		#count { color: #a8a29a; }
 		button {
 			background: #d9a441;
 			color: #16141a;
@@ -43,73 +85,184 @@
 			cursor: pointer;
 		}
 		#message { color: #a8a29a; }
-		table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-		th, td { text-align: left; padding: 8px; border-bottom: 1px solid #36323e; }
-		th { color: #a8a29a; font-weight: 500; }
-		td.score { font-weight: 700; color: #d9a441; }
+
+		/* Results */
+		.result {
+			background: #1e1b23;
+			border: 1px solid #36323e;
+			border-radius: 8px;
+			padding: 14px 16px;
+			margin-bottom: 12px;
+		}
+		.result-head { display: flex; align-items: baseline; gap: 12px; }
+		.rank { color: #a8a29a; font-weight: 600; }
+		.item-name { font-size: 1.25rem; font-weight: 700; }
+		.cost { color: #a8a29a; }
+		.score {
+			margin-left: auto;
+			background: #d9a441;
+			color: #16141a;
+			font-weight: 700;
+			border-radius: 6px;
+			padding: 2px 10px;
+		}
+		.hero-reasons {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 8px;
+			margin-top: 10px;
+		}
+		.hero-name { font-size: 1.05rem; font-weight: 700; min-width: 100px; }
+		.chip {
+			background: #2c2833;
+			border-radius: 999px;
+			padding: 3px 10px;
+			font-size: 0.85rem;
+		}
+		.chip .points { color: #d9a441; font-weight: 700; }
+		.chip.matchup.positive { background: #1f3326; }
+		.chip.matchup.negative { background: #3a2023; }
+		.chip.matchup.negative .points { color: #ff8a80; }
 	</style>
 </head>
 <body>
 	<h1>Deadlock Build Advisor</h1>
-	<p class="subtitle">Pick the enemy heroes to see which items counter them best.</p>
+	<p class="subtitle">Pick up to 6 enemy heroes to see which items counter them best.</p>
 
 	<div id="heroes" class="heroes"></div>
-	<button id="recommend">Recommend items</button>
+	<div class="controls">
+		<button id="recommend">Recommend items</button>
+		<span id="count">0 / 6 selected</span>
+	</div>
 	<p id="message"></p>
-
-	<table id="results" hidden>
-		<thead>
-			<tr><th>Item</th><th>Cost</th><th>Score</th><th>Counters</th></tr>
-		</thead>
-		<tbody></tbody>
-	</table>
+	<div id="results"></div>
 
 	<script>
+		const MAX_ENEMIES = 6;
 		const heroesDiv = document.getElementById('heroes');
+		const count = document.getElementById('count');
 		const message = document.getElementById('message');
-		const table = document.getElementById('results');
-		const tbody = table.querySelector('tbody');
+		const results = document.getElementById('results');
 
-		// Build one checkbox per hero from GET /api/heroes
+		// "Grey Talon" -> "/images/heroes/grey-talon.png"
+		function portraitUrl(name) {
+			return '/images/heroes/' + name.toLowerCase().replaceAll(' ', '-') + '.png';
+		}
+
+		// Hero portrait, or the hero's initials if the image file is missing
+		function portrait(name, small) {
+			const img = document.createElement('img');
+			img.className = small ? 'portrait small' : 'portrait';
+			img.src = portraitUrl(name);
+			img.alt = name;
+			img.addEventListener('error', () => {
+				const fallback = document.createElement('div');
+				fallback.className = img.className;
+				fallback.textContent = name.split(' ').map(word => word[0]).join('');
+				img.replaceWith(fallback);
+			});
+			return img;
+		}
+
+		// Build one card per hero from GET /api/heroes
 		async function loadHeroes() {
 			const response = await fetch('/api/heroes');
 			const heroes = await response.json();
 			for (const hero of heroes) {
-				const label = document.createElement('label');
+				const card = document.createElement('label');
+				card.className = 'hero-card';
+				if (hero.description) {
+					card.dataset.description = hero.description;
+				}
 				const checkbox = document.createElement('input');
 				checkbox.type = 'checkbox';
-				checkbox.value = hero;
-				label.append(checkbox, ' ' + hero);
-				heroesDiv.append(label);
+				checkbox.value = hero.name;
+				checkbox.addEventListener('change', updateSelection);
+				const name = document.createElement('span');
+				name.textContent = hero.name;
+				card.append(checkbox, portrait(hero.name, false), name);
+				heroesDiv.append(card);
 			}
 		}
 
-		// Send the checked heroes to GET /api/recommendations and show the results
+		// Show how many heroes are picked, and lock the rest once 6 are picked
+		function updateSelection() {
+			const boxes = heroesDiv.querySelectorAll('input');
+			const picked = heroesDiv.querySelectorAll('input:checked').length;
+			for (const box of boxes) {
+				box.disabled = !box.checked && picked >= MAX_ENEMIES;
+			}
+			count.textContent = picked + ' / ' + MAX_ENEMIES + ' selected';
+		}
+
+		// One chip per reason, e.g. "Flight +3"
+		function reasonChip(reason) {
+			const chip = document.createElement('span');
+			chip.className = 'chip ' + reason.kind;
+			if (reason.kind === 'matchup') {
+				chip.classList.add(reason.points > 0 ? 'positive' : 'negative');
+			}
+			const points = document.createElement('span');
+			points.className = 'points';
+			points.textContent = (reason.points > 0 ? '+' : '') + reason.points;
+			chip.append(reason.reason + ' ', points);
+			return chip;
+		}
+
+		// One card per item: name, cost and score, then the reasons grouped by enemy hero
+		function resultCard(recommendation, rank) {
+			const card = document.createElement('div');
+			card.className = 'result';
+
+			const head = document.createElement('div');
+			head.className = 'result-head';
+			const rankSpan = document.createElement('span');
+			rankSpan.className = 'rank';
+			rankSpan.textContent = '#' + rank;
+			const name = document.createElement('span');
+			name.className = 'item-name';
+			name.textContent = recommendation.item;
+			const cost = document.createElement('span');
+			cost.className = 'cost';
+			cost.textContent = recommendation.cost.toLocaleString() + ' souls';
+			const score = document.createElement('span');
+			score.className = 'score';
+			score.textContent = recommendation.score;
+			head.append(rankSpan, name, cost, score);
+			card.append(head);
+
+			const byHero = Map.groupBy(recommendation.reasons, reason => reason.hero);
+			for (const [hero, reasons] of byHero) {
+				const row = document.createElement('div');
+				row.className = 'hero-reasons';
+				const heroName = document.createElement('span');
+				heroName.className = 'hero-name';
+				heroName.textContent = hero;
+				row.append(portrait(hero, true), heroName, ...reasons.map(reasonChip));
+				card.append(row);
+			}
+			return card;
+		}
+
+		// Send the picked heroes to GET /api/recommendations and show the results
 		async function recommend() {
 			const checked = heroesDiv.querySelectorAll('input:checked');
 			const enemies = Array.from(checked, box => box.value);
+			results.innerHTML = '';
 			if (enemies.length === 0) {
 				message.textContent = 'Pick at least one enemy hero.';
-				table.hidden = true;
 				return;
 			}
 
 			const params = new URLSearchParams({ enemies: enemies.join(',') });
 			const response = await fetch('/api/recommendations?' + params);
-			const items = await response.json();
+			const recommendations = await response.json();
 
-			tbody.innerHTML = '';
-			for (const item of items) {
-				const row = tbody.insertRow();
-				row.insertCell().textContent = item.item;
-				row.insertCell().textContent = item.cost;
-				const score = row.insertCell();
-				score.textContent = item.score;
-				score.className = 'score';
-				row.insertCell().textContent = item.countered;
-			}
-			message.textContent = items.length + ' items ranked against ' + enemies.join(', ');
-			table.hidden = items.length === 0;
+			recommendations.forEach((recommendation, index) => {
+				results.append(resultCard(recommendation, index + 1));
+			});
+			message.textContent = recommendations.length + ' items ranked against ' + enemies.join(', ');
 		}
 
 		document.getElementById('recommend').addEventListener('click', recommend);

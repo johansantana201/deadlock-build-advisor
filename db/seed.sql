@@ -1,6 +1,17 @@
-INSERT INTO heroes(name)
-VALUES ('Abrams'), ('Venator'), ('Grey Talon'), ('Lash'), ('Victor'), ('Shiv'), ('Calico'), ('Haze'),
-	   ('Holliday'), ('Bebop'), ('Celeste'), ('Mina'), ('Vindicta');
+INSERT INTO heroes(name, description)
+VALUES ('Abrams', 'Tanky brawler who charges in, stuns and heals himself through long fights'),
+	   ('Venator', 'Gunner with steady and burst weapon damage, plus damage over time from his grenade'),
+	   ('Grey Talon', 'Long-range archer who bursts from afar, slows enemies and takes to the air'),
+	   ('Lash', 'Diver who leaps in from above, slams enemies and lifts the team into the air'),
+	   ('Victor', 'Durable spirit caster who heals himself while dealing steady spirit damage'),
+	   ('Shiv', 'Slippery assassin who stacks bleed with knives and finishes low health targets'),
+	   ('Calico', 'Spirit assassin who bursts targets and stacks damage over time'),
+	   ('Haze', 'Stealthy gunner who sleeps a target, then shreds them with weapon burst'),
+	   ('Holliday', 'Mobile spirit caster with launch pads, explosives and crowd control'),
+	   ('Bebop', 'Hooks enemies into his team and melts them with weapon and spirit damage'),
+	   ('Celeste', 'Mobile spirit caster who keeps up steady spirit pressure'),
+	   ('Mina', 'Mobile spirit assassin who stacks effects and bursts targets down'),
+	   ('Vindicta', 'Flies above fights and snipes with heavy weapon damage');
 
 INSERT INTO items(name, cost)
 VALUES ('Healbane', 1600), ('Toxic Bullets', 3200), 
@@ -138,3 +149,11 @@ FROM (VALUES
      AS v(item_name, threat_name, effectiveness, reason)
 JOIN items i ON i.name = v.item_name
 JOIN threats t ON t.name = v.threat_name;
+
+INSERT INTO item_hero_modifiers (item_id, hero_id, modifier, reason)
+SELECT i.id, h.id, v.modifier, v.reason
+FROM (VALUES
+			 ('Plated Armor', 'Abrams', -2, 'Most of Abrams'' weapon damage comes from melee, so plated armor does little against him'))
+	 AS v(item_name, hero_name, modifier, reason)
+JOIN items i ON i.name = v.item_name
+JOIN heroes h ON h.name = v.hero_name;
