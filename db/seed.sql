@@ -1,6 +1,18 @@
-INSERT INTO heroes(name)
-VALUES ('Abrams'), ('Venator'), ('Grey Talon'), ('Lash'), ('Victor'), ('Shiv'), ('Calico'), ('Haze'),
-	   ('Holliday'), ('Bebop'), ('Celeste'), ('Mina'), ('Vindicta');
+INSERT INTO heroes(name, description)
+	  VALUES ('Abrams', 'Tanky brawler with high sustain who charges in, melees, and deals steady spirit damage'),
+			 ('Venator', 'Low mobility gunner with steady weapon damage, weapon burst, damage over time with his grenades, and true damage'),
+			 ('Grey Talon', 'Long-range flyer who whittles you down with arrows and executes targets with his owl'),
+			 ('Lash', 'Flyer who slams down onto enemies, and can pick up them up to toss them onto the ground'),
+			 ('Victor', 'Drain tank that heals himself while dealing steady spirit damage'),
+			 ('Shiv', 'Mobile and tanky brawler who stacks bleed with knives and executes low health targets'),
+			 ('Calico', 'Spirit assassin who bursts targets and stacks damage over time'),
+			 ('Haze', 'Roamer who can go invisible, put her enemies to sleep, and burst them down with her gun'),
+			 ('Holliday', 'Mobile spirit caster with jump pads, explosives and a lasso that allows her to kidnap an enemy'),
+			 ('Bebop', 'Tanky bruiser with a hook, spirit bombs, a solid gun, and an energy beam for an ultimate'),
+			 ('Celeste', 'Extremely high mobility spirit carry, punishes teams that stick too closely together'),
+			 ('Mina', 'Spirit assassin who deals burst spirit damage and has high mobility with iframes'),
+			 ('Vindicta', 'Squishy flyer who pumps out high gun damage, can root enemies');
+
 
 INSERT INTO items(name, cost)
 VALUES ('Healbane', 1600), ('Toxic Bullets', 3200), 
@@ -26,7 +38,8 @@ VALUES ('High Sustain', 'Enemy has high self healing, shielding, or is receiving
 	   ('Flight', 'Enemy can fly or hover in the air'), 
 	   ('Spirit Burst', 'Enemy can deal a high burst of spirit damage'),
 	   ('Weapon Burst', 'Enemy can deal a high burst of weapon damage'),
-	   ('Status Markers', 'Enemy deals damage over time or builds up effect stacks to deal damage and/or apply debuffs'),
+	   ('Lingering Debuffs', 'Effects that stay on you for a set time and tick or weaken you'),
+	   ('Stacking Burst', 'Stacks build up, then pop for burst damage'),
 	   ('High Health', 'Enemy has high effective hp from either resists, high base hp, or high hp boon scaling');
 
 INSERT INTO hero_threats (hero_id, threat_id)
@@ -41,7 +54,7 @@ FROM (VALUES ('Abrams', 'High Sustain'),
 			 ('Lash', 'High Mobility'),
 			 ('Venator', 'Weapon Damage'),
 			 ('Venator', 'Weapon Burst'),
-			 ('Venator', 'Status Markers'),
+			 ('Venator', 'Lingering Debuffs'),
 			 ('Grey Talon', 'Flight'),
 			 ('Grey Talon', 'Spirit Burst'),
 			 ('Grey Talon', 'Soft Crowd Control'),
@@ -49,11 +62,11 @@ FROM (VALUES ('Abrams', 'High Sustain'),
 			 ('Victor', 'Spirit Damage'),
 			 ('Shiv', 'Spirit Burst'),
 			 ('Shiv', 'High Mobility'),
-			 ('Shiv', 'Status Markers'),
+			 ('Shiv', 'Lingering Debuffs'),
 			 ('Shiv', 'High Sustain'),
 			 ('Shiv', 'High Health'),
 			 ('Calico', 'Spirit Burst'),
-			 ('Calico', 'Status Markers'),
+			 ('Calico', 'Lingering Debuffs'),
 			 ('Haze', 'Weapon Damage'),
 			 ('Haze', 'Weapon Burst'),
 			 ('Haze', 'Hard Crowd Control'),
@@ -62,15 +75,16 @@ FROM (VALUES ('Abrams', 'High Sustain'),
 			 ('Holliday', 'Hard Crowd Control'),
 			 ('Bebop', 'Hard Crowd Control'),
 			 ('Bebop', 'Weapon Damage'),
-			 ('Bebop', 'Status Markers'),
+			 ('Bebop', 'Stacking Burst'),
 			 ('Bebop', 'Spirit Damage'),
 			 ('Bebop', 'High Health'),
 			 ('Celeste', 'Spirit Damage'),
 			 ('Celeste', 'High Mobility'),
 			 ('Mina', 'Spirit Burst'),
 			 ('Mina', 'High Mobility'),
-			 ('Mina', 'Status Markers'),
+			 ('Mina', 'Stacking Burst'),
 			 ('Mina', 'High Sustain'),
+			 ('Mina', 'Flight'),
 			 ('Vindicta', 'Flight'),
 			 ('Vindicta', 'Weapon Damage'))
 			 AS v(hero_name, threat_name)
@@ -122,9 +136,10 @@ FROM (VALUES
              ('Indomitable', 'Hard Crowd Control', 3, 'Activation makes you immune to sudden stuns and displacements'),
              ('Indomitable', 'Soft Crowd Control', 2, 'Immunity also blocks most slows and silences while active'),
              ('Debuff Reducer', 'Soft Crowd Control', 3, 'Shortens slows, silences and other debuffs'),
-             ('Debuff Reducer', 'Status Markers', 2, 'Damage-over-time and stacking effects wear off faster'),
+             ('Debuff Reducer', 'Lingering Debuffs', 2, 'Damage-over-time and other over-time effects wear off faster'),
              ('Debuff Reducer', 'Hard Crowd Control', 1, 'Shortens stun duration slightly'),
-             ('Dispel Magic', 'Status Markers', 3, 'Removes damage-over-time effects and debuff stacks entirely'),
+             ('Dispel Magic', 'Lingering Debuffs', 3, 'Removes damage-over-time and other lingering effects'),
+			 ('Dispel Magic', 'Stacking Burst', 3, 'Clears and removes stacks'),
              ('Dispel Magic', 'Soft Crowd Control', 3, 'Cleanses slows, silences and other active debuffs'),
 
 			 -- Anti-tank: percent damage and resist reduction
@@ -138,3 +153,17 @@ FROM (VALUES
      AS v(item_name, threat_name, effectiveness, reason)
 JOIN items i ON i.name = v.item_name
 JOIN threats t ON t.name = v.threat_name;
+
+INSERT INTO item_hero_modifiers (item_id, hero_id, modifier, reason)
+SELECT i.id, h.id, v.modifier, v.reason
+FROM (VALUES
+			 ('Plated Armor', 'Abrams', -2, 'Most of Abrams'' weapon damage comes from melee, so plated armor does little against him'),
+			 ('Slowing Hex', 'Holliday', -1, 'Does not stop Holliday from taking a jump pad that is already placed down'),
+			 ('Slowing Hex', 'Celeste', -1, 'She has a unique passive where she has increased air control and decreased gravity, hex reduces this but does not turn it off'),
+			 ('Knockdown', 'Vindicta', 2, 'Vindicta''s flight is her most important ability and has a  long cooldown, bringing her down is extremely valuable'),
+			 ('Healbane', 'Mina', -1, 'Mina typically heals out of combat by using her rake on a jungle camp after an exchange with an enemy hero, rather than healing during a fight'),
+			 ('Toxic Bullets', 'Mina', -1, 'Mina typically heals out of combat by using her rake on a jungle camp after an exchange with an enemy hero, rather than healing during a fight'),
+			 ('Crippling Headshot', 'Mina', -1, 'Mina typically heals out of combat by using her rake on a jungle camp after an exchange with an enemy hero, rather than healing during a fight'))
+	 AS v(item_name, hero_name, modifier, reason)
+JOIN items i ON i.name = v.item_name
+JOIN heroes h ON h.name = v.hero_name;

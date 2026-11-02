@@ -17,9 +17,10 @@ public class HeroController {
 		this.jdbc = jdbc;
 	}
 
-	// Hero names for the enemy picker on the front end
+	// Heroes for the enemy picker on the front end
 	@GetMapping("/heroes")
-	public List<String> heroes() {
-		return jdbc.queryForList("SELECT name FROM heroes ORDER BY name", String.class);
+	public List<Hero> heroes() {
+		return jdbc.query("SELECT name, description FROM heroes ORDER BY name",
+				(row, rowNum) -> new Hero(row.getString("name"), row.getString("description")));
 	}
 }
