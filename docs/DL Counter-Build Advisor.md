@@ -17,14 +17,14 @@ I’m the player, Deadlock is the first MOBA game that I’ve played so there ar
 
 **The last 3 times this happened:** *Real, recent moments. For each: when and where, what went wrong, what it cost, what you did.*
 
-1. I laned against a victor (high sustain hero) and lost that lane because he had too much effective HP.
-2. I lost a game because the enemy Celeste was able to generate a substantial soul lead due to the fact that she always managed to escape.
-3. I laned against a Venator and lost that lane because he was pumping out too much damage and I was never able to approach him without losing a lot of health.
+1. I laned against a victor (high sustain hero) and lost that lane because I had forgotten to buy anti-heal.
+2. I lost a game because the enemy Wraith (mobile carry hero) was able to generate a substantial soul lead due to the fact that she was able to farm all game and was able to use her teleport to escape whenever she was attacked.
+3. I laned against a Bebop (hook hero) and lost that lane because I kept dying after getting hooked.
 
 **What it costs me:** *Be specific. How often, how much?*
 
-- ⏱️ Time: A deadlock match lasts around 30-35 minutes on average, so if I’m investing that much time into a match I want to win.
-- 🙂 Joy: It upsets me a little when I look back on a match that I lost and realize that there were items I could have bought earlier, or items that I could have just bought in general that may have saved the game.
+- ⏱️ Time: A deadlock match lasts around 30 minutes on average, and for the Standard game mode you only gain progression upon winning, so it's imperative to win.
+- 🙂 Joy: It upsets me when I look back on a match that I lost and realize that there were items I could have bought earlier, or items that I didn't buy at all that would have possibly changed the flow of the game.
 
 ---
 
@@ -52,7 +52,7 @@ There is no decision support process that connects the relevant match factors an
 
 > **When** I am losing a lane or struggling against specific enemies in Deadlock,
 **I struggle to** determine which items would best counter the problems I am experiencing,
-**which costs me** the opportunity to respond effectively during a match and can contribute to losing games after around 35 minutes of play.
+**which costs me** the opportunity to respond effectively during a match and can contribute to losing games after half an hour of match time.
 **This happens because** deciding which item to buy requires considering my hero, enemy heroes, their abilities, my current situation, and other factors at the same time.
 **Right now, I** either look through the shop myself or follow a general build from the community builder system, **but** neither approach specifically evaluates what counter item is most relevant to the situation currently occurring in my match.
 > 
@@ -68,12 +68,14 @@ When I select the enemy heroes I am facing, I can quickly identify several relev
 | What I use or tried | What it does well | Why it falls short *for me* |
 | --- | --- | --- |
 | Looking through the shop myself for counters | Gives me access to all of the available items and lets me manually look for something that might solve my problem. | I have to remember what items do and manually connect their effects to the enemies and situation. This can be difficult to evaluate in a time crunch, as you need to buy quickly during the match. |
+
 | Following the build path from a build in the community builder system | Provides an established build path and helps me know what items are generally recommended for my hero. | A general/meta build does not necessarily account for the specific enemies or problems I am facing. It tells me what is generally good, rather than what is relevant as a response to my current situation. A community build doesn’t necessarily account for the specific enemies or problems I am facing |
+
 | Searching for information about specific counters outside the game | Can help me learn what items or strategies may work against particular heroes. | It takes additional time and still requires me to interpret how the information applies to my own hero, the other enemies, and the specific problem I am experiencing. |
 
 **The gap:**
 
-The ability to quickly assess the situation and identify **which counter items are relevant to the current match and why**, rather than simply receiving a general build.
+The ability to quickly assess the situation and identify **which counter items are relevant to the current match and why**, rather than simply receiving a general build or some specific hero matchup advice.
 
 ---
 
@@ -101,16 +103,16 @@ The ability to quickly assess the situation and identify **which counter items a
 
 ## **Later:**
 
-- Enter my own hero, so items that fit my build rank higher
+- Enter my own hero, so items that fit my build and are compatible with my hero rank higher
 - Select the main problem I'm having in the match
 - Enter my current items and souls, to skip owned items and show what's affordable
 - Heroes with more than one common build
 - Every hero and item in the game (the MVP covers 13 heroes and 23 items)
 - Deploy it online, and eventually an in-game overlay
+- Live match tracking and updating through the in-game spectate feature, and connecting to your desktop
 
 ## **Not doing:** *Things I’m deliberately leaving out.*
 
-- Live game tracking or automatic detection of heroes and items. Deadlock has no public API for live matches.
 - Machine learning or AI-generated recommendations. The scores are hand-written rules, so every recommendation can be explained.
 - A full build planner or community build platform. Deadlock already has one in-game.
 - User accounts or saved builds.
