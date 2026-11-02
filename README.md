@@ -6,6 +6,8 @@ A web app for me, a newer Deadlock player, that ranks which items counter the en
 
 ## Demo
 
+[▶ Watch the demo video (1 min)](docs/demo.mp4)
+
 Picking Abrams, Grey Talon and Vindicta as enemies. Knockdown ranks first: both Grey Talon and Vindicta fly (+3 each), and a matchup modifier adds +2 because Vindicta's flight is her most important ability.
 
 ![Recommendations against Abrams, Grey Talon and Vindicta](docs/screenshots/recommendations.jpg)
