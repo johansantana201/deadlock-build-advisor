@@ -44,6 +44,9 @@
 			height: 64px;
 			border-radius: 50%;
 			object-fit: cover;
+			/* The portraits are taller than wide with the face near the top,
+			   so crop from the top instead of the middle */
+			object-position: center 15%;
 			background: #36323e;
 			display: flex;
 			align-items: center;
@@ -145,9 +148,9 @@
 		const message = document.getElementById('message');
 		const results = document.getElementById('results');
 
-		// "Grey Talon" -> "/images/heroes/grey-talon.png"
+		// "Grey Talon" -> "/images/heroes/grey-talon.webp"
 		function portraitUrl(name) {
-			return '/images/heroes/' + name.toLowerCase().replaceAll(' ', '-') + '.png';
+			return '/images/heroes/' + name.toLowerCase().replaceAll(' ', '-') + '.webp';
 		}
 
 		// Hero portrait, or the hero's initials if the image file is missing
