@@ -1,7 +1,7 @@
---Core Tables
 CREATE TABLE heroes (
 	id SERIAL PRIMARY KEY,
-	name VARCHAR(50) NOT NULL UNIQUE
+	name VARCHAR(50) NOT NULL UNIQUE,
+	description TEXT
 );
 
 CREATE TABLE items (
