@@ -136,7 +136,7 @@ FROM (VALUES
              ('Indomitable', 'Hard Crowd Control', 3, 'Activation makes you immune to sudden stuns and displacements'),
              ('Indomitable', 'Soft Crowd Control', 2, 'Immunity also blocks most slows and silences while active'),
              ('Debuff Reducer', 'Soft Crowd Control', 3, 'Shortens slows, silences and other debuffs'),
-             ('Debuff Reducer', 'Status Markers', 2, 'Damage-over-time and stacking effects wear off faster'),
+             ('Debuff Reducer', 'Lingering Debuffs', 2, 'Damage-over-time and other over-time effects wear off faster'),
              ('Debuff Reducer', 'Hard Crowd Control', 1, 'Shortens stun duration slightly'),
              ('Dispel Magic', 'Lingering Debuffs', 3, 'Removes damage-over-time and other lingering effects'),
 			 ('Dispel Magic', 'Stacking Burst', 3, 'Clears and removes stacks'),
