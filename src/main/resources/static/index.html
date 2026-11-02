@@ -54,14 +54,14 @@
 		}
 		.portrait.small { width: 28px; height: 28px; font-size: 0.75rem; }
 
-		/* Description shown when hovering a hero card */
+		/* Description shown when hovering a hero card.
+		   It sits below the card and spans the card's own width, so it never runs off the page */
 		.hero-card[data-description]:hover::after {
 			content: attr(data-description);
 			position: absolute;
-			bottom: calc(100% + 8px);
-			left: 50%;
-			transform: translateX(-50%);
-			width: 220px;
+			top: calc(100% + 8px);
+			left: 0;
+			right: 0;
 			background: #0d0c10;
 			border: 1px solid #d9a441;
 			border-radius: 6px;
