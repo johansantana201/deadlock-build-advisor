@@ -56,6 +56,7 @@ I'm the player. Deadlock is the first MOBA game that I've played, so there are m
 | Enter my own hero | Items that fit my hero's build rank higher. | Later |
 | Select the main problem I'm experiencing | Describe what's going wrong instead of relying only on enemy heroes. | Later |
 | Enter my current items and souls | Skip items I already own and show what's affordable now. | Later |
+| Live match tracking | Dynamically update the recommended items based on the match state | Later |
 
 ### MVP
 
