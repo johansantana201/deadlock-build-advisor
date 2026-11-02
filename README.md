@@ -75,7 +75,6 @@ I'm the player. Deadlock is the first MOBA game that I've played, so there are m
 
 ### Not doing
 
-- Live game tracking or automatic detection of heroes and items. Deadlock has no public API for live matches.
 - Machine learning or AI-generated recommendations. The scores are hand-written rules, so every recommendation can be explained.
 - A full build planner or community build platform. Deadlock already has one in-game.
 - User accounts or saved builds.
