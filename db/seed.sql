@@ -158,12 +158,16 @@ INSERT INTO item_hero_modifiers (item_id, hero_id, modifier, reason)
 SELECT i.id, h.id, v.modifier, v.reason
 FROM (VALUES
 			 ('Plated Armor', 'Abrams', -2, 'Most of Abrams'' weapon damage comes from melee, so plated armor does little against him'),
+			 ('Metal Skin', 'Abrams', -2, 'This item does grants some passive bullet resist, but the active portion of the item does nothing against melees'),
 			 ('Slowing Hex', 'Holliday', -1, 'Does not stop Holliday from taking a jump pad that is already placed down'),
 			 ('Slowing Hex', 'Celeste', -1, 'She has a unique passive where she has increased air control and decreased gravity, hex reduces this but does not turn it off'),
-			 ('Knockdown', 'Vindicta', 2, 'Vindicta''s flight is her most important ability and has a  long cooldown, bringing her down is extremely valuable'),
+			 ('Slowing Hex', 'Shiv', 2, 'Disables 2/4 of his abilities and his right click movement, rendering him the slowest character in the game'),
+			 ('Knockdown', 'Vindicta', 3, 'Vindicta''s flight is her most important ability and has a  long cooldown, bringing her down is extremely valuable'),
 			 ('Healbane', 'Mina', -1, 'Mina typically heals out of combat by using her rake on a jungle camp after an exchange with an enemy hero, rather than healing during a fight'),
 			 ('Toxic Bullets', 'Mina', -1, 'Mina typically heals out of combat by using her rake on a jungle camp after an exchange with an enemy hero, rather than healing during a fight'),
-			 ('Crippling Headshot', 'Mina', -1, 'Mina typically heals out of combat by using her rake on a jungle camp after an exchange with an enemy hero, rather than healing during a fight'))
+			 ('Crippling Headshot', 'Mina', -1, 'Mina typically heals out of combat by using her rake on a jungle camp after an exchange with an enemy hero, rather than healing during a fight'),
+			 ('Knockdown', 'Mina', -2, 'Mina''s Sanguine Retreat grants her brief iframes which she can use to avoid the telegraphed knockdown stun'),
+			 ('Knockdown', 'Lash', 1, 'Knocks him out of the air and stuns him out of his potential team wipe ultimate'))
 	 AS v(item_name, hero_name, modifier, reason)
 JOIN items i ON i.name = v.item_name
 JOIN heroes h ON h.name = v.hero_name;
