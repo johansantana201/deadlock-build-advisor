@@ -2,10 +2,10 @@
 
 # Deadlock Counter-Building Advisor
 
-> One line: what this is and who it’s for (hint: it’s for you).
+> A web app for me, a newer Deadlock player, that ranks which items counter the enemy heroes I'm facing and explains why each one helps.
 > 
 
-**Author:** Johan Santana· **Course:** CMP 464/343 Product 1 · **Last updated:** 10/05/26
+**Author:** Johan Santana · **Course:** CMP 464/343 Product 1 · **Last updated:** 11/01/26
 
 ---
 
@@ -59,7 +59,7 @@ There is no decision support process that connects the relevant match factors an
 
 **I’ll know this is solved when:** 
 
-When I enter my hero, the relevant enemy heroes, and the main problem I am experiencing, I can quickly identify several relevant counter items and understand why each one could help in my situation.
+When I select the enemy heroes I am facing, I can quickly identify several relevant counter items and understand why each one could help in my situation.
 
 ---
 
@@ -83,18 +83,37 @@ The ability to quickly assess the situation and identify **which counter items a
 
 | Feature (what it does) | Benefit (how my life gets better) | MVP or Later? |
 | --- | --- | --- |
-| Enter my hero and the enemy heroes I am facing | Lets the system understand who I am playing and which enemies I need to respond to. | MVP |
-| Select the main problem/threat I am experiencing, such as getting kited, taking too much damage, or struggling against enemy sustain | Lets me describe what is actually going wrong in the match instead of relying solely on enemy hero information. | MVP |
-| Receive a ranked list of relevant counter items with an explanation of why each item is relevant | Gives me actionable options without requiring me to manually compare every item in the shop. | MVP |
-| Show relevant items recommendations with item cost and relevant tradeoffs | Helps me determine which recommended counter is practical for my current amount of gold and situation. | MVP |
+| Pick up to 6 enemy heroes from a hero grid, with a short description of each hero on hover | Lets the system know which enemies I need to respond to, in a few clicks. | MVP (built) |
+| Receive a ranked list of counter items, with the reasons for each item grouped by enemy hero | Gives me actionable options without requiring me to manually compare every item in the shop, and teaches me *why* an item counters a hero. | MVP (built) |
+| Show each item's cost, and rank the cheaper item first when two items tie | Helps me pick a counter I can actually afford sooner. | MVP (built) |
+| Matchup modifiers: hero-specific exceptions to the general rules (e.g. Plated Armor is weaker against Abrams because his damage is mostly melee) | Recommendations reflect real game knowledge, not just broad categories. | MVP (built) |
+| Enter my own hero | Items that fit my hero's build rank higher (the `item_hero_synergies` table already exists). | Later |
+| Select the main problem I am experiencing, such as getting kited or struggling against sustain | Lets me describe what is going wrong instead of relying only on enemy heroes. | Later |
+| Enter my current items and available souls | Skips items I already own and shows which ones I can afford right now. | Later |
+| Support heroes with more than one common build (e.g. weapon vs spirit Drifter) | Threats match how that enemy is actually built in my game. | Later |
+| In-game overlay | Get recommendations without leaving the game. | Later |
 
 ## **MVP (2–3 features):** *The skateboard: the smallest version I’d actually use.*
 
-- 
+- Pick the enemy heroes I'm facing (up to 6).
+- Get a ranked list of counter items with the reason each one helps, grouped by enemy hero.
+- See each item's cost, with the cheaper item first on a tie.
 
 ## **Later:**
 
+- Enter my own hero, so items that fit my build rank higher
+- Select the main problem I'm having in the match
+- Enter my current items and souls, to skip owned items and show what's affordable
+- Heroes with more than one common build
+- Every hero and item in the game (the MVP covers 13 heroes and 23 items)
+- Deploy it online, and eventually an in-game overlay
+
 ## **Not doing:** *Things I’m deliberately leaving out.*
+
+- Live game tracking or automatic detection of heroes and items. Deadlock has no public API for live matches.
+- Machine learning or AI-generated recommendations. The scores are hand-written rules, so every recommendation can be explained.
+- A full build planner or community build platform. Deadlock already has one in-game.
+- User accounts or saved builds.
 
 ---
 
@@ -102,26 +121,28 @@ The ability to quickly assess the situation and identify **which counter items a
 
 ### Front end
 
-- **Surface:** [CLI / Web / Mobile / Cross-platform / Chat]
-- **Tools:** [e.g., Next.js, Python, Expo]
-- **Why:** *How does this fit where and when I have the problem?*
+- **Surface:** Web
+- **Tools:** One HTML page with plain CSS and JavaScript (no framework), served by Spring Boot
+- **Why:** I play Deadlock on my PC, so a browser tab I can alt-tab to (or keep on a second monitor) fits where I have the problem. The page only needs a hero grid and a results list, so a framework would add setup without adding anything I need yet.
 
 ### Back end
 
 | Piece | Choice | Why |
 | --- | --- | --- |
-| Server / API |  |  |
-| Data storage |  |  |
-| Outside services (optional) |  |  |
-| Hosting / deploy |  |  |
+| Server / API | Java 21 + Spring Boot (REST controllers, `JdbcTemplate`) | Java is the language I know best, and Spring Boot gives me a web server, JSON conversion and database connection with little setup. I use plain SQL through `JdbcTemplate` because the scoring is a SQL query with joins. |
+| Data storage | PostgreSQL | The data is naturally relational: heroes have threats, items counter threats, and junction tables link them. SQL joins and `SUM` do the scoring directly in the database. |
+| Outside services (optional) | None | All hero, item and threat data is entered by me in `db/seed.sql`. |
+| Hosting / deploy | Runs locally for now; demo shown with screenshots | Deploying needs a hosted PostgreSQL database too. That's on the Later list. |
 
 ### Architecture sketch
 
 ```mermaid
 flowchart LR
-  U["Me"] --> FE["Front end: ..."]
-  FE --> API["Back end / API: ..."]
-  API --> DB[("Data: ...")]
+  U["Me (browser)"] --> FE["Front end: index.html<br/>hero grid + results"]
+  FE -- "GET /api/heroes<br/>GET /api/recommendations?enemies=..." --> API["Back end: Spring Boot<br/>HeroController, RecommendationController"]
+  API -- "SQL query" --> DB[("PostgreSQL<br/>heroes, threats, items,<br/>hero_threats, item_threat_relationships,<br/>item_hero_modifiers")]
+  DB -- "rows" --> API
+  API -- "JSON" --> FE
 ```
 
 ---
@@ -130,4 +151,7 @@ flowchart LR
 
 *What am I still unsure about? What do I need to figure out or test first?*
 
--
+- Are my effectiveness numbers (1–3) and modifiers right? They are my own judgement and need testing in real matches.
+- How should heroes with more than one common build be handled?
+- Deadlock is updated often. How do I keep item and hero data current after patches?
+- Where to deploy the app and its database so anyone can open a live link.
